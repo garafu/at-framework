@@ -14,5 +14,7 @@
   },
   "devDependencies": {
     "eslint": "^4.9.0"
-  }
+  },
+  "repository": "https://github.com/garafu/at-framework.git",
+  "private": false
 }
