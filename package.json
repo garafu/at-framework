@@ -8,5 +8,11 @@
   },
   "types": "./index.d.ts",
   "author": "Akinari Tsugo",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "iconv-lite": "^0.4.19"
+  },
+  "devDependencies": {
+    "eslint": "^4.9.0"
+  }
 }
