@@ -1,4 +1,5 @@
 var http = require("http");
+var https = require("https");
 var querystring = require("querystring");
 var i18n = require("iconv-lite");
 
@@ -32,8 +33,9 @@ WebClient.request = function (options) {
  * Send "GET" request.
  */
 WebClient.get = function (options) {
-  var url, search, req;
+  var url, search, req, protocol;
 
+  // Create request URL.
   url = require("url").parse(options.url);
 
   search = url.search ? url.search + "&" : (options.data ? "?" : "");
@@ -46,7 +48,20 @@ WebClient.get = function (options) {
       break;
   }
 
-  req = http.request({
+  // Get protocol.
+  switch (url.protocol) {
+    case "http:":
+      protocol = http;
+      break;
+    case "https:":
+      protocol = https;
+      break;
+    default:
+      throw new Error("protocol error.");
+  }
+
+  // Create and execute request.
+  req = protocol.request({
     protocol: url.protocol || "http:",
     host: url.hostname || "localhost",
     port: url.port,
@@ -68,10 +83,22 @@ WebClient.get = function (options) {
  * Send "POST" request.
  */
 WebClient.post = function (options) {
-  var url, body, headers, contentType, req;
+  var url, body, headers, contentType, req, protocol;
 
   // Create request URL.
   url = require("url").parse(options.url);
+
+  // Get protocol.
+  switch (url.protocol) {
+    case "http:":
+      protocol = http;
+      break;
+    case "https:":
+      protocol = https;
+      break;
+    default:
+      throw new Error("protocol error.");
+  }
 
   // Get content-type.
   headers = options.headers || {};
@@ -100,7 +127,7 @@ WebClient.post = function (options) {
   }
 
   // Create and execute request.
-  req = http.request({
+  req = protocol.request({
     protocol: url.protocol || "http:",
     host: url.hostname || "localhost",
     port: url.port,
