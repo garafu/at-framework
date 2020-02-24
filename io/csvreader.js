@@ -46,11 +46,11 @@ CsvReader.prototype.readRow = function (callback) {
           if (!field) {
             isQuotedField = true;
             continue;
-          } else {
-            if (i + 1 > line.length) {
-              isQuotedField = false;
-              continue;
-            }
+          }
+        } else {
+          if (i + 1 >= arr.length) {
+            isQuotedField = false;
+            continue;
           }
         }
 
