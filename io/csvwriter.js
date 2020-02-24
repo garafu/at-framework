@@ -14,8 +14,8 @@ var util = require("util");
  */
 var CsvWriter = function (filepath, encoding, options) {
   this._stream = this._createStreamWriter(filepath, encoding);
-  this._options = this._initializeOptions(options);
-  this._stringify = this._getStringify(this.options.escape);
+  this._options = this._initializeOptions(options || {});
+  this._stringify = this._getStringify(this._options.escape);
 
   if (this._options.header) {
     this.writeRow(this._options.header);
@@ -55,7 +55,7 @@ CsvWriter.prototype._getStringify = function (escape) {
   switch (escape) {
     case "force":
       stringify = function (value) {
-        value = value.replace(/"/g, "\"\"");
+        value = ("" + value).replace(/"/g, "\"\"");
         return `"${value}"`;
       };
       break;
