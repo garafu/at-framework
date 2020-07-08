@@ -11,7 +11,7 @@ var File = function () {
  * @param {functoin(err, isExists)} callback 
  * @returns {Promise}
  */
-File.isExists = function (path, callback) {
+File.exists = function (path, callback) {
   return promisecallback(new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
       if (!err && stats) {
