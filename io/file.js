@@ -9,9 +9,10 @@ var File = function () {
  * Whethere the specified file is exists or not.
  * @param {string} path 
  * @param {functoin(err, isExists)} callback 
+ * @returns {Promise}
  */
 File.isExists = function (path, callback) {
-  promisecallback(new Promise((resolve, reject) => {
+  return promisecallback(new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
       if (!err && stats) {
         resolve(true);
