@@ -74,7 +74,7 @@ CsvReader.prototype.readRow = function (callback) {
       field += "\r\n";
     } else {
       record.push(field);
-      callback(record);
+      callback && callback(record);
       this.emit("data", record);
       record = [];
       field = "";
