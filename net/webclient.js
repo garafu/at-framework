@@ -45,49 +45,49 @@ WebClient.request = function (options) {
   }
 };
 
-WebClient.get = function (optioins) {
-  optioins.method = "GET";
-  return WebClient.read(optioins);
+WebClient.get = function (options) {
+  options.method = "GET";
+  return WebClient.read(options);
 };
 
-WebClient.head = function (optioins) {
-  optioins.method = "HEAD";
-  return WebClient.read(optioins);
+WebClient.head = function (options) {
+  options.method = "HEAD";
+  return WebClient.read(options);
 };
 
-WebClient.post = function (optioins) {
-  optioins.method = "POST";
-  return WebClient.write(optioins);
+WebClient.post = function (options) {
+  options.method = "POST";
+  return WebClient.write(options);
 };
 
-WebClient.put = function (optioins) {
-  optioins.method = "PUT";
-  return WebClient.write(optioins);
+WebClient.put = function (options) {
+  options.method = "PUT";
+  return WebClient.write(options);
 };
 
-WebClient.delete = function (optioins) {
-  optioins.method = "DELETE";
-  return WebClient.read(optioins);
+WebClient.delete = function (options) {
+  options.method = "DELETE";
+  return WebClient.read(options);
 };
 
-WebClient.connect = function (optioins) {
-  optioins.method = "CONNECT";
-  return WebClient.read(optioins);
+WebClient.connect = function (options) {
+  options.method = "CONNECT";
+  return WebClient.read(options);
 };
 
 WebClient.options = function (options) {
-  optioins.method = "OPTIONS";
-  return WebClient.read(optioins);
+  options.method = "OPTIONS";
+  return WebClient.read(options);
 };
 
 WebClient.trace = function (options) {
-  optioins.method = "TRACE";
-  return WebClient.read(optioins);
+  options.method = "TRACE";
+  return WebClient.read(options);
 };
 
 WebClient.patch = function (options) {
-  optioins.method = "PATCH";
-  return WebClient.write(optioins);
+  options.method = "PATCH";
+  return WebClient.write(options);
 };
 
 /**
@@ -120,7 +120,7 @@ WebClient.read = function (options) {
     method: options.method || "GET",
     path: (url.pathname + search),
     headers: options.headers,
-    auth: (options.username && optioins.password) ? `${options.username}:${options.password}` : undefined
+    auth: (options.username && options.password) ? `${options.username}:${options.password}` : undefined
   }, (res) => {
     WebClient.onresponse.call(this, req, res, options);
   });
@@ -177,7 +177,7 @@ WebClient.write = function (options) {
     method: options.method || "POST",
     path: (url.pathname + (url.search || "")),
     headers,
-    auth: (options.username && optioins.password) ? `${options.username}:${options.password}` : undefined
+    auth: (options.username && options.password) ? `${options.username}:${options.password}` : undefined
   }, (res) => {
     WebClient.onresponse.call(this, req, res, options);
   });
