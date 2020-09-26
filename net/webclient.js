@@ -14,6 +14,20 @@ var getProtocol = function (protocol) {
   }
 };
 
+var createQueryString = function (url, query) {
+  var search;
+  search = url.search ? url.search + "&" : (query ? "?" : "");
+  switch (typeof (query)) {
+    case "object":
+      search += querystring.stringify(query);
+      break;
+    case "string":
+      search += querystring.escape(query);
+      break;
+  }
+  return search;
+};
+
 var WebClient = function () {
 
 };
@@ -22,7 +36,9 @@ var WebClient = function () {
  * Send http request.
  * @param   {string}    options.url         URL.
  * @param   {string}    options.method      Request method.
- * @param   {object}    options.data        Request data.
+ * @param   {object}    options.data        Request data. 
+ * @param   {object}    options.query       Request query string.
+ * @param   {object}    options.body        Request body.
  * @param   {string}    options.contentType Request content-type.
  * @param   {string}    options.encoding    Request/respons encoding.
  * @param   {object}    options.headers     Request headers. Key-value object.
@@ -94,20 +110,11 @@ WebClient.patch = function (options) {
  * Send "GET", "HEAD", "DELETE", "CONNECT", "OPTIONS, ""TRACE"  request.
  */
 WebClient.read = function (options) {
-  var url, search, req, protocol;
+  var url, search, req, protocol, query;
 
   // Create request URL.
   url = require("url").parse(options.url);
-
-  search = url.search ? url.search + "&" : (options.data ? "?" : "");
-  switch (typeof (options.data)) {
-    case "object":
-      search += querystring.stringify(options.data);
-      break;
-    case "string":
-      search += querystring.escape(options.data);
-      break;
-  }
+  search = createQueryString(url, (options.data ? options.data : options.query));
 
   // Get protocol.
   protocol = getProtocol(url.protocol);
@@ -135,10 +142,11 @@ WebClient.read = function (options) {
  * Send "POST", "PUT", "PATCH" request.
  */
 WebClient.write = function (options) {
-  var url, body, headers, contentType, req, protocol;
+  var url, query, body, headers, contentType, req, protocol;
 
   // Create request URL.
   url = require("url").parse(options.url);
+  search = createQueryString(url, options.query);
 
   // Get protocol.
   protocol = getProtocol(url.protocol);
@@ -148,20 +156,21 @@ WebClient.write = function (options) {
   contentType = headers["Content-Type"] = options.contentType || headers["Content-Type"] || "application/json";
 
   // Create request body.
-  if (options.data && typeof (options.data) === "object") {
+  body = options.data ? options.data : options.body;
+  if (body && typeof (body) === "object") {
     switch (contentType) {
       case "application/json":
-        body = JSON.stringify(options.data);
+        body = JSON.stringify(body);
         break;
       case "application/x-www-form-urlencoded":
-        body = querystring.stringify(options.data);
+        body = querystring.stringify(body);
         break;
       default:
-        body = querystring.escape(options.data);
+        body = querystring.escape(body);
         break;
     }
   } else {
-    body = querystring.escape(options.data);
+    body = querystring.escape(body);
   }
 
   // Create request headers.
@@ -175,7 +184,7 @@ WebClient.write = function (options) {
     host: url.hostname || "localhost",
     port: url.port,
     method: options.method || "POST",
-    path: (url.pathname + (url.search || "")),
+    path: (url.pathname + search),
     headers,
     auth: (options.username && options.password) ? `${options.username}:${options.password}` : undefined
   }, (res) => {
