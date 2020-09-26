@@ -28,6 +28,15 @@ var createQueryString = function (url, query) {
   return search;
 };
 
+var isTextType = function (contentType) {
+  if (contentType.indexOf("text/") >= 0 ||
+    contentType.indexOf("application/json") >= 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 var WebClient = function () {
 
 };
@@ -201,6 +210,13 @@ WebClient.write = function (options) {
  * When call response event is occured.
  */
 WebClient.onresponse = function (req, res, options) {
+  var contentType = res.headers["content-type"] || "";
+
+  if (!isTextType(contentType)) {
+    options.success.call(this, req, res);
+    return;
+  }
+
   var data = "";
   var encoding = (options.encoding || "").toLowerCase();
   if (encoding && encoding !== "utf-8" && encoding !== "utf8") {
@@ -211,7 +227,7 @@ WebClient.onresponse = function (req, res, options) {
     data += chunk;
   });
   res.on("end", () => {
-    res.data = data;
+    res.data = (contentType.indexOf("application/json") >= 0) ? JSON.parse(data) : data;
     options.success && options.success.call(this, req, res);
   });
 };
